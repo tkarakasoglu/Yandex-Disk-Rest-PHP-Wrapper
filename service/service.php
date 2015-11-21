@@ -36,16 +36,24 @@ class Service {
   }
 
   // SOURCE: https://tech.yandex.com/disk/api/reference/meta-docpage/
-  function getMetaInformation($path) {
-    $params = array("path" => $path);
-    $this->request($this->baseUrl, "resources", $params);
+  function getMetaInformation($path, $sort = null, $limit = null, $offset = null, $fields = null, $preview_size = null, $preview_crop = null) {
+    $params = array("path" => $path,
+                    "sort" => $sort,
+                    "limit" => $limit,
+                    "offset" => $offset,
+                    "fields" => $fields,
+                    "preview_size" => $preview_size,
+                    "preview_crop" => $preview_crop);
+    return $this->request($this->baseUrl, "resources", $params);
   }
 
   function request($host, $path, $params = array()) {
     // Params are a map from names to values
-    $paramStr = "";
-    foreach ($params as $name) {
-      print_r($name);
+    $paramStr = "?";
+    foreach ($params as $key=>$val) {
+      if ($val) {
+        $paramStr .= $key . "=" . $val . "&";
+      }
     }
 		$opts = array(
 			'http' => array(
@@ -56,7 +64,6 @@ class Service {
 		$_default_opts = stream_context_get_params(stream_context_get_default());
 		$opts = array_merge_recursive($_default_opts['options'], $opts);
 		$context = stream_context_create($opts);
-    echo $host . $path . $paramStr;
     $response = file_get_contents($host . $path . $paramStr, false, $context);
     return $response;
   }
