@@ -47,12 +47,19 @@ class Service {
     return $this->request($this->baseUrl, "resources", $params);
   }
 
+  // SOURCE: https://tech.yandex.com/disk/api/reference/public-docpage/
+  function downloadFileOrFolder($public_key, $path = null) {
+    $params = array("public_key" => $public_key,
+                    "path" => $path);
+    return $this->request($this->baseUrl, "resources/download", $params);
+  }
+
   function request($host, $path, $params = array()) {
     // Params are a map from names to values
     $paramStr = "?";
     foreach ($params as $key=>$val) {
       if ($val) {
-        $paramStr .= $key . "=" . $val . "&";
+        $paramStr .= $key . "=" . urlencode($val) . "&";
       }
     }
 		$opts = array(

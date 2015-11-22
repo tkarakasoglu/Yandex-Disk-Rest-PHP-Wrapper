@@ -20,8 +20,16 @@ if (!isset($_SESSION["token"])) {
   // ALREADY LOGGED IN
 }
 
-echo $service->getDiskInformation();
-//echo $service->getMetaInformation("");
+//echo $service->getDiskInformation();
+//print_r(json_decode($service->getMetaInformation("EBOOKS"), true)["_embedded"]["items"]);
+$metaInformation = json_decode($service->getMetaInformation("EBOOKS"), true);
+$public_key = $metaInformation["public_key"];
+$items = $metaInformation["_embedded"]["items"];
+foreach ($items as $item) {
+  //$downloadUrl = json_decode($service->downloadFileOrFolder($public_key, $item["path"]), true)["href"];
+  //$imageUrl = $item["preview"];
+  echo "<a href='" . $downloadUrl .  "' target='_blank'>" . $item["name"] . "</a><br>";
+}
 
 
 
